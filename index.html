@@ -2870,17 +2870,15 @@ async function init(){
 function heroIcon(hid){
   if(HERO_IMG[hid])return HERO_IMG[hid];
   const s=SB[hid];
+  if(s&&s.icon)return s.icon;   // 腾讯 CDN（国内最快，2026-11-04 恢复为主源）
   const en = s?.alias || hid;
-  // 主源 jsDelivr（仓库 heroes/*.png）；失败由 imgFail 依次切静态 icon / 腾讯 CDN
-  return `https://cdn.jsdelivr.net/gh/ReQiLM/ReQiLM.github.io@main/heroes/${en}.png`;
+  return `https://game.gtimg.cn/images/lol/act/img/champion/${en}.png`;
 }
 function heroAlt(hid){
   const s=SB[hid];
   const en = s?.alias || hid;
-  const alts=[];
-  if(s&&s.icon)alts.push(s.icon);
-  alts.push(`https://game.gtimg.cn/images/lol/act/img/champion/${en}.png`);
-  return alts;
+  return [`https://cdn.jsdelivr.net/gh/ReQiLM/ReQiLM.github.io@main/heroes/${en}.png`,
+          `https://game.gtimg.cn/images/lol/act/img/champion/${en}.png`];
 }
 function imgFail(img){
   const alts=(img.dataset.alts||"").split("|").filter(Boolean);
