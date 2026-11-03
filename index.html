@@ -365,7 +365,9 @@ function showDetail(hid){
   filtered.sort((x, y) => {
     const tx = x.tier || x.overall_tier;
     const ty = y.tier || y.overall_tier;
-    return (tierRank[tx] || 9) - (tierRank[ty] || 9);
+    const rx = (tx in tierRank) ? tierRank[tx] : 9;
+    const ry = (ty in tierRank) ? tierRank[ty] : 9;
+    return rx - ry;
   });
   const top = filtered.slice(0, 20);
   for (const a of top) {
@@ -375,9 +377,9 @@ function showDetail(hid){
     const rankText = a.rank ? '#' + a.rank : '';
     const item = document.createElement('div');
     item.className = 'aug';
-    item.innerHTML = '<div class="grade g-' + grade + '">' + grade + '</div>
-      <div class="nm">' + name + '</div>
-      <div class="meta">' + pick + ' ' + rankText + '</div>';
+    item.innerHTML = '<div class="grade g-' + grade + '">' + grade + '</div>' +
+      '<div class="nm">' + name + '</div>' +
+      '<div class="meta">' + pick + ' ' + rankText + '</div>';
     augContainer.appendChild(item);
   }
   detail.scrollIntoView({behavior:'smooth'});
