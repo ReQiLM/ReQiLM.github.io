@@ -97,6 +97,12 @@ footer .copy{font-size:12px;color:var(--muted)}
 .g-S{color:var(--S)}.g-A{color:var(--A)}.g-B{color:var(--B)}.g-C{color:var(--C)}.g-D{color:var(--D)}
 .w-good{color:var(--win)}.w-bad{color:#F87171}
 
+/* rarity badges */
+.r-prismatic{background:linear-gradient(135deg,#FF6B6B,#FFD93D,#6BCB77,#4D96FF,#9B59B6);background-size:200% 200%;animation:shimmer 3s ease infinite;color:#fff;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
+.r-gold{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
+.r-silver{background:linear-gradient(135deg,#C0C0C0,#E8E8E8);color:#333;font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700}
+@keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
 #loading{text-align:center;padding:80px;color:var(--muted);font-size:16px}
 
 @media(max-width:640px){
@@ -376,12 +382,15 @@ function showDetail(hid){
   for (const a of top) {
     const name = A[a.id] ? A[a.id].name : a.id;
     const grade = a.tier || a.overall_tier;
+    const rarity = a.rarity || (A[a.id] ? A[a.id].rarity : '');
+    const rarityClass = rarity ? 'r-' + rarity : '';
+    const rarityLabel = rarity === 'prismatic' ? '棱彩' : rarity === 'gold' ? '金' : rarity === 'silver' ? '银' : '';
     const pick = a.pick ? (a.pick * 100).toFixed(1) + '%' : '';
     const rankText = a.rank ? '#' + a.rank : '';
     const item = document.createElement('div');
     item.className = 'aug';
     item.innerHTML = '<div class="grade g-' + grade + '">' + grade + '</div>' +
-      '<div class="nm">' + name + '</div>' +
+      '<div class="nm">' + name + (rarityLabel ? ' <span class="' + rarityClass + '">' + rarityLabel + '</span>' : '') + '</div>' +
       '<div class="meta">' + pick + ' ' + rankText + '</div>';
     augContainer.appendChild(item);
   }
