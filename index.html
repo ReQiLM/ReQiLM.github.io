@@ -176,11 +176,11 @@ footer .copy{font-size:12px;color:var(--muted)}
   <h2 class="sec-title">关于</h2>
   <p class="sec-sub">感谢使用</p>
   <p style="color:var(--muted);font-size:13px;line-height:1.7">
-    感谢你使用这个小工具。<br>
-    如果觉得对你有帮助，欢迎请我喝杯咖啡 ☕
+    如果觉得HexRank不错，感谢使用软件。<br>
+    欢迎请我喝杯咖啡 ☕
   </p>
-  <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
-    <a class="btn-donate" href="https://github.com/sponsors/ReQiLM" target="_blank">☕ 请我喝杯咖啡</a>
+  <div style="margin-top:20px">
+    <button class="btn-donate" onclick="showDonateModal()">☕ 请我喝杯咖啡</button>
     <a class="btn-donate-ghost" href="https://github.com/ReQiLM" target="_blank">⭐ Star</a>
   </div>
 </section>
@@ -204,6 +204,27 @@ footer .copy{font-size:12px;color:var(--muted)}
   </div>
 </section>
 
+</div>
+
+<!-- Donate Modal -->
+<div id="donate-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;max-width:400px;width:90%">
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:8px">支持HexRank</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px">如果觉得HexRank不错，感谢使用软件</p>
+    <div style="display:flex;gap:20px;justify-content:center;margin-bottom:24px">
+      <div style="text-align:center">
+        <img src="wechat.png" alt="微信支付" style="width:140px;height:140px;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none;width:140px;height:140px;border-radius:8px;border:1px solid var(--border);align-items:center;justify-content:center;font-size:12px;color:var(--muted)">微信支付</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px">微信支付</div>
+      </div>
+      <div style="text-align:center">
+        <img src="alipay.png" alt="支付宝" style="width:140px;height:140px;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div style="display:none;width:140px;height:140px;border-radius:8px;border:1px solid var(--border);align-items:center;justify-content:center;font-size:12px;color:var(--muted)">支付宝</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px">支付宝</div>
+      </div>
+    </div>
+    <button onclick="hideDonateModal()" style="padding:8px 24px;border-radius:8px;background:var(--card);color:var(--text);border:1px solid var(--border);font-size:14px;cursor:pointer">关闭</button>
+  </div>
 </div>
 
 <footer>
@@ -316,6 +337,22 @@ function showDetail(hid){
 function hideDetail(){
   document.getElementById('detail').style.display='none';
 }
+
+function showDonateModal(){
+  document.getElementById('donate-modal').style.display='flex';
+}
+
+function hideDonateModal(){
+  document.getElementById('donate-modal').style.display='none';
+}
+
+// Click outside modal to close
+document.addEventListener('click', function(e){
+  const modal = document.getElementById('donate-modal');
+  if (modal.style.display === 'flex' && !modal.contains(e.target)) {
+    hideDonateModal();
+  }
+});
 
 init();
 </script>
