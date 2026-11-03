@@ -336,51 +336,51 @@ function showTop10(){
 }
 
 function showDetail(hid){
-  const h=H[hid];const b=B[hid]||{};
-  console.log('showDetail called with hid:', hid, 'B[hid] exists:', !!B[hid], 'augments count:', b.augments?.length);
-  const det=document.getElementById('detail');
-  det.style.display='block';
-  det.innerHTML=`
+  const hero = H[hid];
+  const heroBundle = B[hid] || {};
+  const detail = document.getElementById('detail');
+  detail.style.display = 'block';
+  detail.innerHTML = `
     <button class="back" onclick="hideDetail()">← 返回列表</button>
     <div class="d-head">
-      <img src="${heroIcon(hid)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.textContent=${JSON.stringify(h.name||hid)};this.nextElementSibling.style.background='var(--card)';this.nextElementSibling.style.alignItems='center';this.nextElementSibling.style.justifyContent='center';this.nextElementSibling.style.borderRadius='10px';this.nextElementSibling.style.fontSize='14px';this.nextElementSibling.style.color='var(--muted)'"><span style="display:none;width:56px;height:56px"></span>
+      <img src="${heroIcon(hid)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.textContent=${JSON.stringify(hero.name||hid)};this.nextElementSibling.style.background='var(--card)';this.nextElementSibling.style.alignItems='center';this.nextElementSibling.style.justifyContent='center';this.nextElementSibling.style.borderRadius='10px';this.nextElementSibling.style.fontSize='14px';this.nextElementSibling.style.color='var(--muted)'"><span style="display:none;width:56px;height:56px"></span>
       <div class="info">
-        <h2>${h.name||hid}</h2>
+        <h2>${hero.name||hid}</h2>
         <div class="en">${hid}</div>
         <div class="metrics">
-          <div class="m"><div class="v" style="color:${(h.win_rate||0)>=.5?'var(--win)':'#F87171'}">${((h.win_rate||0)*100).toFixed(1)}%</div><div class="k">胜率</div></div>
-          <div class="m"><div class="v">${((h.pick_rate||0)*100).toFixed(1)}%</div><div class="k">选取率</div></div>
-          <div class="m"><div class="v">${h.games?(h.games/10000).toFixed(1)+'万':'—'}</div><div class="k">场次</div></div>
-          <div class="m"><div class="v">${h.rank||'—'}</div><div class="k">排名</div></div>
+          <div class="m"><div class="v" style="color:${(hero.win_rate||0)>=.5?'var(--win)':'#F87171'}">${((hero.win_rate||0)*100).toFixed(1)}%</div><div class="k">胜率</div></div>
+          <div class="m"><div class="v">${((hero.pick_rate||0)*100).toFixed(1)}%</div><div class="k">选取率</div></div>
+          <div class="m"><div class="v">${hero.games?(hero.games/10000).toFixed(1)+'万':'—'}</div><div class="k">场次</div></div>
+          <div class="m"><div class="v">${hero.rank||'—'}</div><div class="k">排名</div></div>
         </div>
       </div>
     </div>
     <div class="sec-label">海克斯推荐</div>
     <div class="augments" id="aug-list"></div>
   `;
-  const augBox=document.getElementById('aug-list');
-  const augmentsData = b.augments || [];
-  console.log('hero:', hid, 'augments:', augmentsData.slice(0,3).map(a => a.tier));
-  const augList=augmentsData.filter(a=>a.tier||a.overall_tier).sort((x,y)=>{
-    const rank={S:0,A:1,B:2,C:3,D:4};
-    const tx=x.tier||x.overall_tier;
-    const ty=y.tier||y.overall_tier;
-    return (rank[tx]||9)-(rank[ty]||9);
-  }).slice(0,20);
-  for(const a of augList){
-    const name=A[a.id]?.name||a.id;
-    const tier=a.tier||a.overall_tier;
-    console.log('display tier:', tier, 'for augment:', a.id);
-    const pick=a.pick?(a.pick*100).toFixed(1)+'%':'';
-    const rank=a.rank?'#'+a.rank:'';
-    const div=document.createElement('div');
-    div.className='aug';
-    div.innerHTML=`<div class="grade g-${tier}">${tier}</div>
-      <div class="nm">${name}</div>
-      <div class="meta">${pick} ${rank}</div>`;
-    augBox.appendChild(div);
+  const augContainer = document.getElementById('aug-list');
+  const augments = heroBundle.augments || [];
+  const tierRank = {S:0, A:1, B:2, C:3, D:4};
+  const filtered = augments.filter(a => a.tier || a.overall_tier);
+  filtered.sort((x, y) => {
+    const tx = x.tier || x.overall_tier;
+    const ty = y.tier || y.overall_tier;
+    return (tierRank[tx] || 9) - (tierRank[ty] || 9);
+  });
+  const top = filtered.slice(0, 20);
+  for (const a of top) {
+    const name = A[a.id] ? A[a.id].name : a.id;
+    const grade = a.tier || a.overall_tier;
+    const pick = a.pick ? (a.pick * 100).toFixed(1) + '%' : '';
+    const rankText = a.rank ? '#' + a.rank : '';
+    const item = document.createElement('div');
+    item.className = 'aug';
+    item.innerHTML = '<div class="grade g-' + grade + '">' + grade + '</div>
+      <div class="nm">' + name + '</div>
+      <div class="meta">' + pick + ' ' + rankText + '</div>';
+    augContainer.appendChild(item);
   }
-  det.scrollIntoView({behavior:'smooth'});
+  detail.scrollIntoView({behavior:'smooth'});
 }
 
 function hideDetail(){
