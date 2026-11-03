@@ -262,7 +262,7 @@ function renderTop10(){
     div.dataset.id=hid;
     const win=(h.win_rate||0)*100;
     const wrCls=win>=50?'w-good':'w-bad';
-    div.innerHTML=`<img class="ava" src="${heroIcon(hid)}" onerror="this.style.background='var(--card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='14px';this.style.color='var(--muted)'">
+    div.innerHTML=`<img class="ava" src="${heroIcon(hid)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.textContent=${JSON.stringify(h.name||hid)};this.nextElementSibling.style.background='var(--card)';this.nextElementSibling.style.alignItems='center';this.nextElementSibling.style.justifyContent='center';this.nextElementSibling.style.borderRadius='8px';this.nextElementSibling.style.fontSize='11px';this.nextElementSibling.style.color='var(--muted)'"><span class="ava-fallback" style="display:none;width:40px;height:40px;margin:0 auto 6px"></span>
       <div class="nm">${h.name||hid}</div>
       <div class="wr ${wrCls}">${win.toFixed(1)}%</div>
       ${t?`<div class="gr g-${t}">${t}</div>`:''}`;
@@ -278,7 +278,7 @@ function showDetail(hid){
   det.innerHTML=`
     <button class="back" onclick="hideDetail()">← 返回列表</button>
     <div class="d-head">
-      <img src="${heroIcon(hid)}" onerror="this.style.background='var(--card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='20px';this.style.color='var(--muted)'">
+      <img src="${heroIcon(hid)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.textContent=${JSON.stringify(h.name||hid)};this.nextElementSibling.style.background='var(--card)';this.nextElementSibling.style.alignItems='center';this.nextElementSibling.style.justifyContent='center';this.nextElementSibling.style.borderRadius='10px';this.nextElementSibling.style.fontSize='14px';this.nextElementSibling.style.color='var(--muted)'"><span style="display:none;width:56px;height:56px"></span>
       <div class="info">
         <h2>${h.name||hid}</h2>
         <div class="en">${hid}</div>
