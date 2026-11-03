@@ -165,8 +165,16 @@ footer .copy{font-size:12px;color:var(--muted)}
 </section>
 
 <section id="top-heroes">
-  <h2 class="sec-title">胜率排行 TOP 10</h2>
-  <p class="sec-sub">点击英雄查看详细海克斯推荐</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <div>
+      <h2 class="sec-title">胜率排行</h2>
+      <p class="sec-sub">点击英雄查看详细海克斯推荐</p>
+    </div>
+    <div id="hero-view-btns">
+      <button type="button" onclick="showAllHeroes()" id="btn-show-all" style="padding:6px 16px;border-radius:6px;background:var(--card);color:var(--text);border:1px solid var(--border);font-size:13px;cursor:pointer">查看全部</button>
+      <button type="button" onclick="showTop10()" id="btn-show-top" style="padding:6px 16px;border-radius:6px;background:var(--accent);color:#fff;border:none;font-size:13px;cursor:pointer;display:none">返回 TOP10</button>
+    </div>
+  </div>
   <div class="heroes-grid" id="grid"></div>
   <div class="detail" id="detail"></div>
 </section>
@@ -175,8 +183,8 @@ footer .copy{font-size:12px;color:var(--muted)}
   <h2 class="sec-title">关于</h2>
   <p class="sec-sub">感谢使用</p>
   <p style="color:var(--muted);font-size:13px;line-height:1.7">
-    如果觉得HexRank不错，感谢使用软件。<br>
-    欢迎请我喝杯咖啡 ☕
+    感谢使用软件。<br>
+    如果觉得HexRank不错，欢迎请我喝杯咖啡 ☕
   </p>
   <div style="margin-top:20px">
     <button type="button" class="btn-donate" onclick="event.stopPropagation();showDonateModal()">☕ 请我喝杯咖啡</button>
@@ -293,8 +301,43 @@ function renderTop10(){
   }
 }
 
+function showAllHeroes(){
+  const grid=document.getElementById('grid');
+  grid.innerHTML='';
+  const all=Object.keys(H).sort((a,b)=>(H[b].win_rate||0)-(H[a].win_rate||0));
+  for(const hid of all){
+    const h=H[hid];
+    const t=tierOf(hid);
+    const div=document.createElement('div');
+    div.className='card';
+    div.dataset.id=hid;
+    const win=(h.win_rate||0)*100;
+    const wrCls=win>=50?'w-good':'w-bad';
+    div.innerHTML=`<img class="ava" src="${heroIcon(hid)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';this.nextElementSibling.textContent=${JSON.stringify(h.name||hid)};this.nextElementSibling.style.background='var(--card)';this.nextElementSibling.style.alignItems='center';this.nextElementSibling.style.justifyContent='center';this.nextElementSibling.style.borderRadius='8px';this.nextElementSibling.style.fontSize='11px';this.nextElementSibling.style.color='var(--muted)'"><span class="ava-fallback" style="display:none;width:40px;height:40px;margin:0 auto 6px"></span>
+      <div class="nm">${h.name||hid}</div>
+      <div class="wr ${wrCls}">${win.toFixed(1)}%</div>
+      ${t?`<div class="gr g-${t}">${t}</div>`:''}`;
+    div.onclick=()=>showDetail(hid);
+    grid.appendChild(div);
+  }
+  document.getElementById('detail').style.display='none';
+  // Swap buttons
+  document.getElementById('btn-show-all').style.display='none';
+  document.getElementById('btn-show-top').style.display='inline-block';
+  grid.scrollIntoView({behavior:'smooth'});
+}
+
+function showTop10(){
+  document.getElementById('btn-show-all').style.display='inline-block';
+  document.getElementById('btn-show-top').style.display='none';
+  renderTop10();
+  document.getElementById('detail').style.display='none';
+  document.querySelector('.wrap').scrollIntoView({behavior:'smooth'});
+}
+
 function showDetail(hid){
   const h=H[hid];const b=B[hid]||{};
+  console.log('showDetail called with hid:', hid, 'B[hid] exists:', !!B[hid], 'augments count:', b.augments?.length);
   const det=document.getElementById('detail');
   det.style.display='block';
   det.innerHTML=`
@@ -316,13 +359,18 @@ function showDetail(hid){
     <div class="augments" id="aug-list"></div>
   `;
   const augBox=document.getElementById('aug-list');
-  const augList=(b.augments||[]).filter(a=>a.tier||a.overall_tier).sort((a,b)=>{
-    const o={S:0,A:1,B:2,C:3,D:4};
-    return (o[a.tier||a.overall_tier]||9)-(o[b.tier||b.overall_tier]||9);
+  const augmentsData = b.augments || [];
+  console.log('hero:', hid, 'augments:', augmentsData.slice(0,3).map(a => a.tier));
+  const augList=augmentsData.filter(a=>a.tier||a.overall_tier).sort((x,y)=>{
+    const rank={S:0,A:1,B:2,C:3,D:4};
+    const tx=x.tier||x.overall_tier;
+    const ty=y.tier||y.overall_tier;
+    return (rank[tx]||9)-(rank[ty]||9);
   }).slice(0,20);
   for(const a of augList){
     const name=A[a.id]?.name||a.id;
     const tier=a.tier||a.overall_tier;
+    console.log('display tier:', tier, 'for augment:', a.id);
     const pick=a.pick?(a.pick*100).toFixed(1)+'%':'';
     const rank=a.rank?'#'+a.rank:'';
     const div=document.createElement('div');
