@@ -179,7 +179,7 @@ footer .copy{font-size:12px;color:var(--muted)}
     欢迎请我喝杯咖啡 ☕
   </p>
   <div style="margin-top:20px">
-    <button class="btn-donate" onclick="showDonateModal()">☕ 请我喝杯咖啡</button>
+    <button type="button" class="btn-donate" onclick="event.stopPropagation();showDonateModal()">☕ 请我喝杯咖啡</button>
     <a class="btn-donate-ghost" href="https://github.com/ReQiLM" target="_blank">⭐ Star</a>
   </div>
 </section>
