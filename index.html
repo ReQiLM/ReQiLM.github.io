@@ -76,8 +76,10 @@ footer .wrap{display:flex;justify-content:center;align-items:center;gap:12px}
 footer .copy{font-size:12px;color:var(--muted)}
 
 /* donate */
-.btn-donate{display:inline-block;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:600;background:var(--card);color:var(--text);border:1px solid var(--border)}
-.btn-donate:hover{border-color:var(--accent);text-decoration:none}
+.btn-donate{display:inline-block;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#7C6CFF,#5B4CFF);color:#fff;border:none;text-decoration:none}
+.btn-donate:hover{opacity:.85;text-decoration:none}
+.btn-donate-ghost{display:inline-block;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;background:var(--card);color:var(--text);border:1px solid var(--border);text-decoration:none}
+.btn-donate-ghost:hover{border-color:var(--accent);text-decoration:none}
 
 /* download */
 .download-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:20px}
@@ -177,8 +179,9 @@ footer .copy{font-size:12px;color:var(--muted)}
     感谢你使用这个小工具。<br>
     如果觉得对你有帮助，欢迎请我喝杯咖啡 ☕
   </p>
-  <div style="margin-top:16px">
-    <a class="btn-donate" href="https://github.com/ReQiLM" target="_blank">支持作者</a>
+  <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+    <a class="btn-donate" href="https://github.com/sponsors/ReQiLM" target="_blank">☕ 请我喝杯咖啡</a>
+    <a class="btn-donate-ghost" href="https://github.com/ReQiLM" target="_blank">⭐ Star</a>
   </div>
 </section>
 
@@ -189,14 +192,14 @@ footer .copy{font-size:12px;color:var(--muted)}
     <div class="download-card recommended">
       <div class="label">推荐</div>
       <h3>安装版</h3>
-      <div class="size">HexRank-Setup · 94 MB</div>
-      <a class="btn btn-primary" href="https://github.com/ReQiLM/HexRank-2.1.5/releases/latest" target="_blank">GitHub 下载</a>
+      <div class="size">HexRank-Setup-2.1.5 · 94 MB</div>
+      <a class="btn btn-primary" href="https://github.com/ReQiLM/HexRank-2.1.5/releases/download/2.1.5/HexRank-Setup-2.1.5.exe" target="_blank">下载</a>
     </div>
     <div class="download-card">
       <div class="label"></div>
       <h3>便携版</h3>
-      <div class="size">HexRank-Portable · 126 MB</div>
-      <a class="btn btn-ghost" href="https://github.com/ReQiLM/HexRank-2.1.5/releases/latest" target="_blank">GitHub 下载</a>
+      <div class="size">HexRank-Portable-2.1.5 · 126 MB</div>
+      <a class="btn btn-ghost" href="https://github.com/ReQiLM/HexRank-2.1.5/releases/download/2.1.5/HexRank-Portable-2.1.5.zip" target="_blank">下载</a>
     </div>
   </div>
 </section>
@@ -236,7 +239,8 @@ async function init(){
 function heroIcon(hid){
   const s=SB[hid];
   if(s&&s.icon)return s.icon;
-  return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" rx="8" fill="#1A2230"/><text x="20" y="26" text-anchor="middle" fill="#7A8294" font-size="14">?</text></svg>');
+  const en = s?.alias || hid;
+  return `https://game.gtimg.cn/images/lol/act/img/champion/${en}.png`;
 }
 
 function tierOf(hid){
