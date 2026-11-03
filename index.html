@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AramHex</title>
+<style>
+:root {
+  --bg: #0B0F16;
+  --card: #161F2D;
+  --card2: #1C2330;
+  --border: #2A3442;
+  --text: #E8EAF0;
+  --muted: #9A9DAA;
+  --accent: #9B91FF;
+  --S: #F5C518;
+  --A: #FF6B9D;
+  --B: #B980FF;
+  --C: #8A8FA3;
+  --D: #5C6370;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:14px; line-height:1.5;
+}
+#app { max-width:1200px; margin:0 auto; padding:20px; }
+header {
+  display:flex; align-items:center; gap:16px; margin-bottom:24px;
+}
+header h1 { font-size:22px; font-weight:700; }
+header .ver { color:var(--muted); font-size:12px; }
+#search {
+  flex:1; max-width:320px; margin-left:auto;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:8px 12px; color:var(--text);
+  font-size:14px; outline:none;
+}
+#search:focus { border-color:var(--accent); }
+#hero-list {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
+  gap:8px; margin-bottom:24px;
+}
+.hero-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:10px 8px; cursor:pointer;
+  text-align:center; transition:border-color .15s;
+}
+.hero-card:hover { border-color:var(--accent); }
+.hero-card.active { border-color:var(--accent); background:var(--card2); }
+.hero-card .avatar { width:48px; height:48px; border-radius:8px; margin:0 auto 6px; display:block; }
+.hero-card .name { font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hero-card .win { font-size:11px; color:var(--muted); margin-top:2px; }
+.hero-card .tier { font-size:14px; font-weight:700; margin-top:2px; }
+#detail { display:none; }
+#detail .back {
+  background:none; border:none; color:var(--accent); cursor:pointer;
+  font-size:14px; margin-bottom:16px; padding:0;
+}
+#detail .hero-head {
+  display:flex; align-items:center; gap:16px; margin-bottom:20px;
+}
+#detail .hero-head img { width:72px; height:72px; border-radius:12px; }
+#detail .hero-head .info h2 { font-size:20px; font-weight:700; }
+#detail .hero-head .info .sub { color:var(--muted); font-size:13px; margin-top:4px; }
+#detail .hero-head .stats { display:flex; gap:24px; margin-top:8px; }
+#detail .hero-head .stats .s { text-align:center; }
+#detail .hero-head .stats .s .v { font-size:18px; font-weight:700; }
+#detail .hero-head .stats .s .l { font-size:11px; color:var(--muted); }
+#detail h3 { font-size:15px; font-weight:700; margin:24px 0 12px; }
+.augment-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:8px; }
+.augment {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:10px; display:flex; align-items:center; gap:10px;
+}
+.augment .grade { font-size:18px; font-weight:700; width:28px; text-align:center; }
+.augment .a-info { flex:1; min-width:0; }
+.augment .a-name { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.augment .a-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+.build-list { display:flex; flex-direction:column; gap:12px; }
+.build {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:14px;
+}
+.build .b-head { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.build .b-tag {
+  background:var(--accent); color:var(--bg); font-size:11px; font-weight:700;
+  padding:3px 8px; border-radius:4px;
+}
+.build .b-stats { font-size:12px; color:var(--muted); }
+.build .b-items { display:flex; gap:6px; flex-wrap:wrap; }
+.build .b-item {
+  width:36px; height:36px; border-radius:6px; background:var(--card2);
+  display:flex; align-items:center; justify-content:center; font-size:10px;
+  color:var(--muted); border:1px solid var(--border);
+}
+#loading { text-align:center; padding:60px; color:var(--muted); font-size:16px; }
+.grade-S { color:var(--S); }
+.grade-A { color:var(--A); }
+.grade-B { color:var(--B); }
+.grade-C { color:var(--C); }
+.grade-D { color:var(--D); }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>AramHex</h1>
+    <span class="ver" id="ver"></span>
+    <input id="search" placeholder="搜索英雄名称 / ID" />
+  </header>
+  <div id="loading">加载数据中…</div>
+  <div id="content" style="display:none">
+    <div id="hero-list"></div>
+    <div id="detail"></div>
+  </div>
+</div>
+<script>
+const TIER_COLORS = {S:'var(--S)',A:'var(--A)',B:'var(--B)',C:'var(--C)',D:'var(--D)'};
+let DATA = {heroes:{}, augments:{}, bundled:{}};
+
+async function load() {
+  try {
+    const [h, a, b] = await Promise.all([
+      fetch('heroes.json').then(r=>r.json()),
+      fetch('augments.json').then(r=>r.json()),
+      fetch('hero_bundled.json').then(r=>r.json()),
+    ]);
+    DATA = {heroes:h, augments:a, bundled:b.heroes||{}};
+    const lv = document.getElementById('loading');
+    lv.style.display='none';
+    document.getElementById('content').style.display='block';
+    renderHeroes();
+  } catch(e) {
+    document.getElementById('loading').textContent = '加载失败：' + e.message;
+  }
+}
+
+function tierColor(t) { return TIER_COLORS[t] || 'var(--muted)'; }
+
+function heroTiers(hid) {
+  const b = DATA.bundled[hid];
+  if (!b || !b.augments) return {};
+  const tiers = {};
+  for (const a of b.augments) {
+    const t = a.tier || a.overall_tier;
+    if (t && !tiers[t]) tiers[t] = 0;
+    if (t) tiers[t]++;
+  }
+  return tiers;
+}
+
+function heroTier(hid) {
+  const t = heroTiers(hid);
+  if (t.S) return 'S';
+  if (t.A) return 'A';
+  if (t.B) return 'B';
+  if (t.C) return 'C';
+  if (t.D) return 'D';
+  return null;
+}
+
+function renderHeroes(filter='') {
+  const list = document.getElementById('hero-list');
+  list.innerHTML = '';
+  const heroes = Object.keys(DATA.heroes).sort((a,b)=>{
+    const ra = DATA.heroes[a].rank||999;
+    const rb = DATA.heroes[b].rank||999;
+    return ra-rb;
+  });
+  for (const hid of heroes) {
+    const h = DATA.heroes[hid];
+    if (filter && !h.name.includes(filter) && !hid.includes(filter)) continue;
+    const tier = heroTier(hid);
+    const div = document.createElement('div');
+    div.className = 'hero-card';
+    div.dataset.id = hid;
+    const icon = h.icon || `https://game.gtimg.cn/images/lol/act/img/champion/${h.name}.png`;
+    div.innerHTML = `
+      <img class="avatar" src="${icon}" alt="" onerror="this.style.background='var(--card2)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='18px';this.style.color='var(--muted)'">
+      <div class="name">${h.name}</div>
+      <div class="win">${(h.win_rate*100).toFixed(1)}%</div>
+      ${tier ? `<div class="tier grade-${tier}" style="color:${tierColor(tier)}">${tier}</div>` : ''}
+    `;
+    div.onclick = () => showDetail(hid);
+    list.appendChild(div);
+  }
+}
+
+function showDetail(hid) {
+  document.querySelectorAll('.hero-card').forEach(c => c.classList.remove('active'));
+  const card = document.querySelector(`.hero-card[data-id="${hid}"]`);
+  if (card) card.classList.add('active');
+
+  const h = DATA.heroes[hid];
+  const b = DATA.bundled[hid] || {};
+  const detail = document.getElementById('detail');
+  detail.style.display = 'block';
+
+  const icon = h.icon || `https://game.gtimg.cn/images/lol/act/img/champion/${h.name}.png`;
+  const augments = (b.augments||[]).filter(a => a.tier || a.overall_tier).sort((a,b)=>{
+    const ta = a.tier||a.overall_tier||'Z';
+    const tb = b.tier||b.overall_tier||'Z';
+    const order = {S:0,A:1,B:2,C:3,D:4};
+    return (order[ta]||9) - (order[tb]||9);
+  }).slice(0,20);
+
+  const augmentHTML = augments.map(a => {
+    const name = DATA.augments[a.id]?.name || a.id;
+    const tier = a.tier || a.overall_tier;
+    const pick = a.pick ? (a.pick*100).toFixed(1)+'%' : '';
+    const rank = a.rank ? '#'+a.rank : '';
+    return `<div class="augment">
+      <div class="grade grade-${tier}" style="color:${tierColor(tier)}">${tier}</div>
+      <div class="a-info">
+        <div class="a-name">${name}</div>
+        <div class="a-meta">${pick} ${rank}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const builds = b.builds || {};
+  const buildKeys = Object.keys(builds);
+  const buildHTML = buildKeys.slice(0,3).map(k => {
+    const build = builds[k];
+    if (!build || typeof build !== 'object') return '';
+    const items = (build.coreItems||[]).slice(0,6);
+    const itemHTML = items.map(it => {
+      const name = it.name || it.id || '';
+      return `<div class="b-item" title="${name}">${name.slice(0,4)}</div>`;
+    }).join('');
+    const stats = build.stats ? `${(build.stats.winRate*100).toFixed(1)}% 胜率 · ${build.stats.games||'?'} 场` : '';
+    return `<div class="build">
+      <div class="b-head">
+        <span class="b-tag">${k}</span>
+        <span class="b-stats">${stats}</span>
+      </div>
+      <div class="b-items">${itemHTML}</div>
+    </div>`;
+  }).join('');
+
+  detail.innerHTML = `
+    <button class="back" onclick="hideDetail()">← 返回英雄列表</button>
+    <div class="hero-head">
+      <img src="${icon}" alt="" onerror="this.style.background='var(--card2)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='28px';this.style.color='var(--muted)'">
+      <div class="info">
+        <h2>${h.name}</h2>
+        <div class="sub">${h.title || ''}</div>
+        <div class="stats">
+          <div class="s"><div class="v">${(h.win_rate*100).toFixed(1)}%</div><div class="l">胜率</div></div>
+          <div class="s"><div class="v">${(h.pick_rate*100).toFixed(1)}%</div><div class="l">选取率</div></div>
+          <div class="s"><div class="v">${h.games?(h.games/1000).toFixed(0)+'K':'?'}</div><div class="l">场次</div></div>
+          <div class="s"><div class="v">${h.rank||'?'}</div><div class="l">排名</div></div>
+        </div>
+      </div>
+    </div>
+    <h3>强化推荐（S → D）</h3>
+    <div class="augment-list">${augmentHTML || '<div style="color:var(--muted)">暂无数据</div>'}</div>
+    ${buildHTML ? `<h3>出装路线</h3><div class="build-list">${buildHTML}</div>` : ''}
+  `;
+  detail.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function hideDetail() {
+  document.getElementById('detail').style.display = 'none';
+  document.querySelectorAll('.hero-card').forEach(c => c.classList.remove('active'));
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  hideDetail();
+  renderHeroes(e.target.value.trim());
+});
+
+load();
+</script>
+</body>
+</html>
