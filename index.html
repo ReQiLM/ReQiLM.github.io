@@ -5,89 +5,103 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HexRank</title>
 <style>
-:root{--bg:#0B0F16;--panel:#121824;--card:#1A2230;--border:#2A3442;--text:#E0E4EC;--muted:#7A8294;--accent:#7C6CFF;--S:#FFD54A;--A:#FF7BAA;--B:#A78BFA;--C:#6B7280;--D:#4B5563;--win:#4ADE80;--loss:#F87171}
+:root{--bg:#0B0F16;--panel:#121824;--card:#1A2230;--border:#2A3442;--text:#E0E4EC;--muted:#7A8294;--accent:#7C6CFF;--S:#FFD54A;--A:#FF7BAA;--B:#A78BFA;--C:#6B7280;--D:#4B5563;--win:#4ADE80}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:14px}
 a{color:var(--accent);text-decoration:none}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
 
-/* top bar */
 .topbar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border)}
 .topbar .wrap{display:flex;align-items:center;gap:16px;height:52px}
-.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}
-.logo span{color:var(--accent)}
 .nav-links{display:flex;gap:20px}
 .nav-links a{color:var(--muted);font-size:14px}
-.nav-links a:hover{color:var(--text)}
-.topbar .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-links a:hover{color:var(--text);text-decoration:none}
+.logo{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.logo span{color:var(--accent)}
+.topbar .right{margin-left:auto}
 .pill{padding:4px 12px;border-radius:6px;font-size:12px;background:var(--card);color:var(--muted);border:1px solid var(--border)}
 .pill .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--win);margin-right:6px}
 
-/* hero strip */
-.hero-strip{padding:36px 0 28px;border-bottom:1px solid var(--border)}
-.hero-strip h1{font-size:28px;font-weight:800;margin-bottom:8px}
-.hero-strip .desc{color:var(--muted);font-size:14px}
-.hero-stats{display:flex;gap:28px;margin-top:20px;flex-wrap:wrap}
+.hero-strip{padding:48px 0 36px;border-bottom:1px solid var(--border)}
+.hero-strip h1{font-size:30px;font-weight:800;margin-bottom:10px;line-height:1.3}
+.hero-strip h1 .hl{color:var(--accent)}
+.hero-strip .desc{color:var(--muted);font-size:15px;max-width:560px}
+.hero-stats{display:flex;gap:32px;margin-top:24px;flex-wrap:wrap}
 .hero-stats .st{display:flex;flex-direction:column}
-.hero-stats .st .n{font-size:22px;font-weight:800}
-.hero-stats .st .l{font-size:11px;color:var(--muted)}
+.hero-stats .st .n{font-size:24px;font-weight:800}
+.hero-stats .st .l{font-size:11px;color:var(--muted);margin-top:2px}
 
-/* search + filters */
-.toolbar{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap}
-.search-box{flex:1;min-width:200px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:14px;outline:none}
-.search-box:focus{border-color:var(--accent)}
-.sort-btn{padding:8px 14px;border-radius:8px;background:var(--panel);border:1px solid var(--border);color:var(--muted);font-size:13px;cursor:pointer}
-.sort-btn.active{color:var(--text);border-color:var(--accent)}
+section{padding:40px 0;border-bottom:1px solid var(--border)}
+.sec-title{font-size:18px;font-weight:700;margin-bottom:6px}
+.sec-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
 
-/* grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+/* features */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.feature{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px}
+.feature .icon{font-size:24px;margin-bottom:10px}
+.feature h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.feature p{font-size:12px;color:var(--muted);line-height:1.6}
+.feature .tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;margin-top:8px;background:var(--card);color:var(--muted)}
+
+/* top heroes */
+.heroes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:border-color .15s}
 .card:hover{border-color:var(--accent)}
-.card .ava{width:44px;height:44px;border-radius:8px;margin:0 auto 8px;display:block;background:var(--card)}
-.card .nm{font-size:13px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .wr{font-size:12px;text-align:center;margin-top:4px}
-.card .gr{font-size:11px;text-align:center;margin-top:2px;font-weight:700}
+.card .ava{width:40px;height:40px;border-radius:8px;margin:0 auto 6px;display:block;background:var(--card)}
+.card .nm{font-size:12px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .wr{font-size:11px;text-align:center;margin-top:3px}
+.card .gr{font-size:10px;text-align:center;margin-top:2px;font-weight:700}
 
-/* detail panel */
+/* detail */
 .detail{display:none;margin-top:24px}
-.detail .d-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
-.detail .d-head img{width:64px;height:64px;border-radius:10px}
-.detail .d-head .info h2{font-size:22px;font-weight:800}
-.detail .d-head .info .en{color:var(--muted);font-size:13px}
-.detail .d-head .metrics{display:flex;gap:24px;margin-top:8px}
-.detail .d-head .metrics .m{text-align:center}
-.detail .d-head .metrics .m .v{font-size:18px;font-weight:800}
-.detail .d-head .metrics .m .k{font-size:11px;color:var(--muted)}
 .detail .back{background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;margin-bottom:16px;padding:0;display:inline-block}
+.detail .d-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.detail .d-head img{width:56px;height:56px;border-radius:10px}
+.detail .d-head .info h2{font-size:20px;font-weight:800}
+.detail .d-head .info .en{color:var(--muted);font-size:12px}
+.detail .d-head .metrics{display:flex;gap:20px;margin-top:6px}
+.detail .d-head .metrics .m{text-align:center}
+.detail .d-head .metrics .m .v{font-size:16px;font-weight:800}
+.detail .d-head .metrics .m .k{font-size:10px;color:var(--muted)}
+.sec-label{font-size:14px;font-weight:700;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-label::before{content:'';width:3px;height:14px;background:var(--accent);border-radius:2px}
+.augments{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.aug{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px}
+.aug .grade{font-size:14px;font-weight:800;width:22px;text-align:center}
+.aug .nm{font-size:12px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aug .meta{font-size:10px;color:var(--muted)}
 
-/* augment list */
-.augments{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
-.aug{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px}
-.aug .grade{font-size:16px;font-weight:800;width:24px;text-align:center}
-.aug .nm{font-size:13px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.aug .meta{font-size:11px;color:var(--muted)}
-
-/* section label */
-.sec-label{font-size:15px;font-weight:700;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
-.sec-label::before{content:'';width:3px;height:16px;background:var(--accent);border-radius:2px}
-
-/* footer */
-footer{border-top:1px solid var(--border);padding:24px 0;margin-top:40px}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-footer .links{display:flex;gap:16px;font-size:12px;color:var(--muted)}
+footer{padding:24px 0;margin-top:40px}
+footer .wrap{display:flex;justify-content:center;align-items:center;gap:12px}
 footer .copy{font-size:12px;color:var(--muted)}
 
-/* grade colors */
-.g-S{color:var(--S)}.g-A{color:var(--A)}.g-B{color:var(--B)}.g-C{color:var(--C)}.g-D{color:var(--D)}
-.w-good{color:var(--win)}.w-bad{color:var(--loss)}
+/* donate */
+.btn-donate{display:inline-block;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:600;background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-donate:hover{border-color:var(--accent);text-decoration:none}
 
-/* loading */
+/* download */
+.download-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:20px}
+.download-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center}
+.download-card.recommended{border-color:var(--accent)}
+.download-card .label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.download-card h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.download-card .size{font-size:12px;color:var(--muted);margin-bottom:14px}
+.btn{display:inline-block;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none}
+.btn-primary{background:var(--accent);color:var(--bg)}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent)}
+
+.g-S{color:var(--S)}.g-A{color:var(--A)}.g-B{color:var(--B)}.g-C{color:var(--C)}.g-D{color:var(--D)}
+.w-good{color:var(--win)}.w-bad{color:#F87171}
+
 #loading{text-align:center;padding:80px;color:var(--muted);font-size:16px}
 
 @media(max-width:640px){
-  .nav-links{display:none}
-  .hero-strip h1{font-size:22px}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .hero-strip h1{font-size:24px}
+  .heroes-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+  .hero-stats{gap:20px}
+  .hero-stats .st .n{font-size:20px}
 }
 </style>
 </head>
@@ -97,20 +111,19 @@ footer .copy{font-size:12px;color:var(--muted)}
   <div class="wrap">
     <div class="logo">Hex<span>Rank</span></div>
     <div class="nav-links">
-      <a href="#heroes">英雄</a>
-      <a href="#about">关于</a>
+      <a href="#features">功能</a>
+      <a href="#top-heroes">胜率</a>
+      <a href="#download">下载</a>
     </div>
-    <div class="right">
-      <span class="pill"><span class="dot"></span><span id="patch-ver">—</span></span>
-    </div>
+    <div class="right"><span class="pill"><span class="dot"></span><span id="patch-ver">—</span></span></div>
   </div>
 </div>
 
 <div class="wrap">
 
-<div class="hero-strip" id="heroes">
-  <h1>海克斯大乱斗胜率</h1>
-  <div class="desc">国服对局统计 · 每周更新 · 数据来自公开数据仓库</div>
+<div class="hero-strip">
+  <h1>海克斯大乱斗<br><span class="hl">胜率助手</span></h1>
+  <p class="desc">选英雄看胜率，三选一按海克斯推荐。数据来自国服公开统计，每周更新。</p>
   <div class="hero-stats">
     <div class="st"><div class="n" id="st-games">—</div><div class="l">总对局</div></div>
     <div class="st"><div class="n" id="st-heroes">—</div><div class="l">英雄</div></div>
@@ -119,71 +132,111 @@ footer .copy{font-size:12px;color:var(--muted)}
   </div>
 </div>
 
-<div class="toolbar">
-  <input class="search-box" id="search" placeholder="搜索英雄名或 ID…" />
-  <button class="sort-btn active" data-sort="win">胜率</button>
-  <button class="sort-btn" data-sort="pick">选取率</button>
-  <button class="sort-btn" data-sort="games">场次</button>
-  <button class="sort-btn" data-sort="rank">排名</button>
-</div>
-
-<div class="grid" id="grid"></div>
-
-<div class="detail" id="detail">
-  <button class="back" onclick="hideDetail()">← 返回列表</button>
-  <div class="d-head">
-    <img id="d-img" alt="" />
-    <div class="info">
-      <h2 id="d-name"></h2>
-      <div class="en" id="d-en"></div>
-      <div class="metrics">
-        <div class="m"><div class="v" id="d-win"></div><div class="k">胜率</div></div>
-        <div class="m"><div class="v" id="d-pick"></div><div class="k">选取率</div></div>
-        <div class="m"><div class="v" id="d-games"></div><div class="k">场次</div></div>
-        <div class="m"><div class="v" id="d-rank"></div><div class="k">排名</div></div>
-      </div>
+<section id="features">
+  <h2 class="sec-title">功能介绍</h2>
+  <p class="sec-sub">打开就能用，剩下的交给自动识别</p>
+  <div class="features">
+    <div class="feature">
+      <div class="icon">📊</div>
+      <h3>英雄胜率</h3>
+      <p>选英雄时自动认出你和队友的英雄，显示胜率和 S/A/B/C/D 评级。</p>
+      <span class="tag">内置数据</span>
+    </div>
+    <div class="feature">
+      <div class="icon">🎴</div>
+      <h3>海克斯推荐</h3>
+      <p>三选一时按本英雄拿每个海克斯的胜率推荐，S 级优先。</p>
+      <span class="tag">截图 OCR · 本地识别</span>
+    </div>
+    <div class="feature">
+      <div class="icon">🎒</div>
+      <h3>出装与加点</h3>
+      <p>官方出装和技能加点，按路线切换，核心顺序原样展示。</p>
+      <span class="tag">内置数据</span>
+    </div>
+    <div class="feature">
+      <div class="icon">🎯</div>
+      <h3>分段数据</h3>
+      <p>娱乐、中分、前 5% 分开看，不同分段胜率不同。</p>
+      <span class="tag">可选下载</span>
     </div>
   </div>
-  <div class="sec-label">海克斯推荐</div>
-  <div class="augments" id="aug-list"></div>
-</div>
+</section>
 
-</div>
+<section id="top-heroes">
+  <h2 class="sec-title">胜率排行 TOP 10</h2>
+  <p class="sec-sub">点击英雄查看详细海克斯推荐</p>
+  <div class="heroes-grid" id="grid"></div>
+  <div class="detail" id="detail"></div>
+</section>
 
-<footer id="about">
-  <div class="wrap">
-    <div class="links">
-      <a href="https://github.com/czgreat/aramhex-data">数据仓库</a>
-      <a href="https://github.com/czgreat/aramhex">上游项目</a>
+<section id="about">
+  <h2 class="sec-title">关于</h2>
+  <p class="sec-sub">感谢使用</p>
+  <p style="color:var(--muted);font-size:13px;line-height:1.7">
+    感谢你使用这个小工具。<br>
+    如果觉得对你有帮助，欢迎请我喝杯咖啡 ☕
+  </p>
+  <div style="margin-top:16px">
+    <a class="btn-donate" href="https://github.com/ReQiLM" target="_blank">支持作者</a>
+  </div>
+</section>
+
+<section id="download">
+  <h2 class="sec-title">下载</h2>
+  <p class="sec-sub">Windows 10 / 11 · 游戏需设为「无边框」或「窗口化」</p>
+  <div class="download-grid">
+    <div class="download-card recommended">
+      <div class="label">推荐</div>
+      <h3>安装版</h3>
+      <div class="size">HexRank-Setup · 94 MB</div>
+      <a class="btn btn-primary" href="https://github.com/ReQiLM/HexRank-2.1.5/releases/latest" target="_blank">GitHub 下载</a>
     </div>
-    <div class="copy">非官方工具，与腾讯、Riot Games 无关</div>
+    <div class="download-card">
+      <div class="label"></div>
+      <h3>便携版</h3>
+      <div class="size">HexRank-Portable · 126 MB</div>
+      <a class="btn btn-ghost" href="https://github.com/ReQiLM/HexRank-2.1.5/releases/latest" target="_blank">GitHub 下载</a>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="copy">HexRank · 非官方工具 · 与腾讯、Riot Games 无关</div>
   </div>
 </footer>
 
 <script>
-let H={},A={},B={},LV={};
-let sortBy='win';
+let H={},A={},B={},LV={},SB={};
 
 async function init(){
   try{
-    const [h,a,b,lv]=await Promise.all([
+    const [h,a,b,lv,sb]=await Promise.all([
       fetch('heroes.json').then(r=>r.json()),
       fetch('augments.json').then(r=>r.json()),
       fetch('hero_bundled.json').then(r=>r.json()),
       fetch('latest.json').then(r=>r.json()),
+      fetch('static_bundled.json').then(r=>r.json()),
     ]);
-    H=h;A=a;B=b.heroes||{};LV=lv;
+    H=h;A=a;B=b.heroes||{};LV=lv;SB=sb.heroes||{};
     document.getElementById('st-games').textContent=(Object.values(H).reduce((s,v)=>s+(v.games||0),0)/10/10000).toFixed(0)+'万';
     document.getElementById('st-heroes').textContent=Object.keys(H).length;
     document.getElementById('st-aug').textContent=Object.keys(A).length;
-    const snap=(LV.snapshot_at||'').slice(0,10);
-    document.getElementById('st-update').textContent=snap||'—';
-    const patch=(LV.patch||'').split('.').slice(-1)[0];
-    document.getElementById('patch-ver').textContent='v'+(patch||'?');
-    render();
+    document.getElementById('st-update').textContent=(LV.snapshot_at||'').slice(5,10).replace('-','/')||'—';
+    document.getElementById('patch-ver').textContent='v'+(LV.patch||'?').split('.').slice(-1)[0];
+    renderTop10();
   }catch(e){
     document.getElementById('grid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px">加载失败：'+e.message+'</div>';
   }
+}
+
+function heroIcon(hid){
+  const s=SB[hid];
+  if(s&&s.icon)return s.icon;
+  return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" rx="8" fill="#1A2230"/><text x="20" y="26" text-anchor="middle" fill="#7A8294" font-size="14">?</text></svg>');
 }
 
 function tierOf(hid){
@@ -193,18 +246,11 @@ function tierOf(hid){
   return t.S?'S':t.A?'A':t.B?'B':t.C?'C':t.D?'D':null;
 }
 
-function render(filter=''){
+function renderTop10(){
   const grid=document.getElementById('grid');
   grid.innerHTML='';
-  let keys=Object.keys(H);
-  if(filter){keys=keys.filter(k=>H[k].name.includes(filter)||k.includes(filter))}
-  keys.sort((a,b)=>{
-    if(sortBy==='win')return (H[b].win_rate||0)-(H[a].win_rate||0);
-    if(sortBy==='pick')return (H[b].pick_rate||0)-(H[a].pick_rate||0);
-    if(sortBy==='games')return (H[b].games||0)-(H[a].games||0);
-    if(sortBy==='rank')return (H[a].rank||999)-(H[b].rank||999);
-  });
-  for(const hid of keys){
+  const top=Object.keys(H).sort((a,b)=>(H[b].win_rate||0)-(H[a].win_rate||0)).slice(0,10);
+  for(const hid of top){
     const h=H[hid];
     const t=tierOf(hid);
     const div=document.createElement('div');
@@ -212,8 +258,7 @@ function render(filter=''){
     div.dataset.id=hid;
     const win=(h.win_rate||0)*100;
     const wrCls=win>=50?'w-good':'w-bad';
-    const icon=h.icon||('https://game.gtimg.cn/images/lol/act/img/champion/'+(h.name||hid)+'.png');
-    div.innerHTML=`<img class="ava" src="${icon}" onerror="this.style.background='var(--card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='16px';this.style.color='var(--muted)'">
+    div.innerHTML=`<img class="ava" src="${heroIcon(hid)}" onerror="this.style.background='var(--card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='14px';this.style.color='var(--muted)'">
       <div class="nm">${h.name||hid}</div>
       <div class="wr ${wrCls}">${win.toFixed(1)}%</div>
       ${t?`<div class="gr g-${t}">${t}</div>`:''}`;
@@ -224,23 +269,31 @@ function render(filter=''){
 
 function showDetail(hid){
   const h=H[hid];const b=B[hid]||{};
-  document.getElementById('detail').style.display='block';
-  document.getElementById('d-name').textContent=h.name||hid;
-  document.getElementById('d-en').textContent=hid;
-  const icon=h.icon||('https://game.gtimg.cn/images/lol/act/img/champion/'+(h.name||hid)+'.png');
-  document.getElementById('d-img').src=icon;
-  document.getElementById('d-img').onerror=function(){this.style.background='var(--card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='20px';this.style.color='var(--muted)'};
-  document.getElementById('d-win').textContent=((h.win_rate||0)*100).toFixed(1)+'%';
-  document.getElementById('d-pick').textContent=((h.pick_rate||0)*100).toFixed(1)+'%';
-  document.getElementById('d-games').textContent=h.games?(h.games/10000).toFixed(1)+'万':'—';
-  document.getElementById('d-rank').textContent=h.rank||'—';
-
+  const det=document.getElementById('detail');
+  det.style.display='block';
+  det.innerHTML=`
+    <button class="back" onclick="hideDetail()">← 返回列表</button>
+    <div class="d-head">
+      <img src="${heroIcon(hid)}" onerror="this.style.background='var(--card)';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center';this.textContent='?';this.style.fontSize='20px';this.style.color='var(--muted)'">
+      <div class="info">
+        <h2>${h.name||hid}</h2>
+        <div class="en">${hid}</div>
+        <div class="metrics">
+          <div class="m"><div class="v" style="color:${(h.win_rate||0)>=.5?'var(--win)':'#F87171'}">${((h.win_rate||0)*100).toFixed(1)}%</div><div class="k">胜率</div></div>
+          <div class="m"><div class="v">${((h.pick_rate||0)*100).toFixed(1)}%</div><div class="k">选取率</div></div>
+          <div class="m"><div class="v">${h.games?(h.games/10000).toFixed(1)+'万':'—'}</div><div class="k">场次</div></div>
+          <div class="m"><div class="v">${h.rank||'—'}</div><div class="k">排名</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-label">海克斯推荐</div>
+    <div class="augments" id="aug-list"></div>
+  `;
   const augBox=document.getElementById('aug-list');
-  augBox.innerHTML='';
   const augList=(b.augments||[]).filter(a=>a.tier||a.overall_tier).sort((a,b)=>{
     const o={S:0,A:1,B:2,C:3,D:4};
     return (o[a.tier||a.overall_tier]||9)-(o[b.tier||b.overall_tier]||9);
-  }).slice(0,30);
+  }).slice(0,20);
   for(const a of augList){
     const name=A[a.id]?.name||a.id;
     const tier=a.tier||a.overall_tier;
@@ -253,26 +306,12 @@ function showDetail(hid){
       <div class="meta">${pick} ${rank}</div>`;
     augBox.appendChild(div);
   }
-  document.getElementById('detail').scrollIntoView({behavior:'smooth'});
+  det.scrollIntoView({behavior:'smooth'});
 }
 
 function hideDetail(){
   document.getElementById('detail').style.display='none';
-  document.querySelectorAll('.card').forEach(c=>c.classList.remove('active'));
 }
-
-document.getElementById('search').addEventListener('input',e=>{
-  hideDetail();render(e.target.value.trim());
-});
-document.querySelectorAll('.sort-btn').forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    sortBy=btn.dataset.sort;
-    hideDetail();
-    render(document.getElementById('search').value.trim());
-  };
-});
 
 init();
 </script>
